@@ -1,115 +1,222 @@
-import 'package:flutter/material.dart';
+import "package:flutter/material.dart";
 
 void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
+  @override
+  MyAppState createState() => MyAppState();
+}
+
+class MyAppState extends State<MyApp> {
+  // Immutable data
+  static const String _title = "Measures Converters";
+  static const double _DEFAULT_SATE = 0;
+
+  final List<String> _measures = [
+    "meters",
+    "kilometres",
+    "grams",
+    "kilograms",
+    "feet",
+    "miles",
+    "pounds (lbs)",
+    "ounces",
+  ];
+
+  final Map<String, int> _measuresMap = {
+    "meters": 0,
+    "kilometres": 1,
+    "grams": 2,
+    "kilograms": 3,
+    "feet": 4,
+    "miles": 5,
+    "pounds (lbs)": 6,
+    "ounces": 7,
+  };
+
+  final Map<String, List<double>> _formulas = {
+    "0": [1, 0.001, 0, 0, 3.28084, 0.000621371, 0, 0],
+    "1": [1000.0, 1, 0, 0, 3280.84, 0.621371, 0, 0],
+    "2": [0, 0, 1, 0.0001, 0, 0, 0.00220462, 0.035274],
+    "3": [0, 0, 1000, 1, 0, 0, 2.20462, 35.274],
+    "4": [0.3048, 0.0003048, 0, 0, 1, 0.000189394, 0, 0],
+    "5": [1609.34, 1.60934, 0, 0, 5280, 1, 0, 0],
+    "6": [0, 0, 453.592, 0.453592, 0, 0, 1, 16],
+    "7": [0, 0, 28.3495, 0.0283495, 3.28084, 0, 0.0625, 1],
+  };
+
+  // app state
+  double _numberForm = 0;
+  String _fromMeasure = "", _toMeasure = "";
+  String _resultMessage = "";
+
+  @override
+  void initState() {
+    _numberForm = _DEFAULT_SATE;
+    // _fromMeasure = _measures[0];  // We set the default value directly
+    // _toMeasure = _measures[1];  // We set the default value directly
+    super.initState();
+  }
+
+  // styling
+  final TextStyle inputStyle = TextStyle(
+    fontSize: 20,
+    color: Colors.blue[900],
+  );
+
+  final TextStyle labelStyle = TextStyle(
+    fontSize: 24,
+    color: Colors.grey[700],
+  );
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
+      title: _title,
+      home: Scaffold(
+        appBar: AppBar(
+          title: Center(
+            child: Text(_title),
+          ),
+        ),
+        body: Container(
+          // Padding class and container
+          padding: EdgeInsets.symmetric(horizontal: 20),
+          // child: SingleChildScrollView(
+          // The SingleChildScrollView is causing a rendering error
+          child: Column(
+            children: [
+              Spacer(),
+              Text(
+                "Value",
+                style: labelStyle,
+              ),
+              Spacer(),
+              TextField(
+                onChanged: (text) {
+                  var rv = double.tryParse(text);
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
+                  if (rv == null) {
+                    rv = _DEFAULT_SATE;
+                  }
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
+                  setState(() {
+                    _numberForm = rv!;
+                  });
+                },
+                style: inputStyle,
+                decoration: InputDecoration(
+                  hintText: "Enter the measure to convert",
+                ),
+              ),
+              Spacer(),
+              Text(
+                "From",
+                style: labelStyle,
+              ),
+              Spacer(),
+              DropdownButton(
+                isExpanded: true,
+                items: _measures.map((String measure) {
+                  // print(measure);
+                  /* for debugging - There should be exactly one item with 
+                  [DropdownButton]'s value: .
+                  Either zero or 2 or more [DropdownMenuItem]s were detected 
+                  with the same value */
+                  return DropdownMenuItem<String>(
+                    value: measure,
+                    child: Text(measure),
+                  );
+                }).toList(),
+                hint: Text("Choose measure"),
+                onChanged: (measure) {
+                  setState(() {
+                    _fromMeasure = measure.toString();
+                  });
+                },
+                value: _fromMeasure,
+              ),
+              Spacer(),
+              Text(
+                "To",
+                style: labelStyle,
+              ),
+              Spacer(),
+              DropdownButton(
+                isExpanded: true,
+                items: _measures.map((String measure) {
+                  return DropdownMenuItem<String>(
+                    value: measure,
+                    child: Text(
+                      measure,
+                      style: inputStyle,
+                    ),
+                  );
+                }).toList(),
+                hint: Text("Choose measure"),
+                onChanged: (measure) {
+                  setState(() {
+                    _toMeasure = measure.toString();
+                  });
+                },
+                value: _toMeasure,
+              ),
+              Spacer(flex: 2),
+              ElevatedButton(
+                onPressed: () {
+                  // print("Convert button clicked");
+                  // if (_resultMessage == "" ||
+                  //     _toMeasure == "" ||
+                  //     _numberForm == 0) {
+                  //   print("Nothing occurs after button click");
+                  //   return;
+                  // } else {
+                  convert(_numberForm, _fromMeasure, _toMeasure);
+                  // }
+                },
+                child: Text(
+                  "Convert",
+                  style: inputStyle,
+                ),
+              ),
+              Spacer(flex: 2),
+              Text(
+                /* (_numberForm == 0) ? "" : */ _resultMessage,
+                style: inputStyle,
+              ),
+              Spacer(flex: 8)
+            ],
+          ),
+          // ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
+
+  void convert(double measure, String fromMeasure, String toMeasure) {
+    int fromMeasurePos = _measuresMap[fromMeasure]!;
+    int toMeasurePos = _measuresMap[toMeasure]!;
+
+    double scale = _formulas[fromMeasurePos.toString()]![toMeasurePos];
+
+    double result = measure * scale;
+
+    if (result == 0) {
+      _resultMessage = "This conversion cannot be performed";
+    } else {
+      _resultMessage =
+          "${_numberForm.toString()} $_fromMeasure are ${result.toString()} $_toMeasure";
+    }
+
+    setState(() {
+      _resultMessage = _resultMessage;
+    });
+  }
 }
+
+// Always separate business logic from UI
+// Use ScopeModel and Business Logic Components (BLoCs)
