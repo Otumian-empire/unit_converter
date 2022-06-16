@@ -57,8 +57,8 @@ class MyAppState extends State<MyApp> {
   @override
   void initState() {
     _numberForm = _DEFAULT_SATE;
-    // _fromMeasure = _measures[0];  // We set the default value directly
-    // _toMeasure = _measures[1];  // We set the default value directly
+    _fromMeasure = _measures[0]; // We set the default value directly
+    _toMeasure = _measures[1]; // We set the default value directly
     super.initState();
   }
 
@@ -98,14 +98,14 @@ class MyAppState extends State<MyApp> {
               Spacer(),
               TextField(
                 onChanged: (text) {
-                  var rv = double.tryParse(text);
+                  var parsedValued = double.tryParse(text);
 
-                  if (rv == null) {
-                    rv = _DEFAULT_SATE;
+                  if (parsedValued == null) {
+                    parsedValued = _DEFAULT_SATE;
                   }
 
                   setState(() {
-                    _numberForm = rv!;
+                    _numberForm = parsedValued!;
                   });
                 },
                 style: inputStyle,
@@ -138,7 +138,7 @@ class MyAppState extends State<MyApp> {
                     _fromMeasure = measure.toString();
                   });
                 },
-                value: _fromMeasure,
+                value: /* meters */ _fromMeasure,
               ),
               Spacer(),
               Text(
@@ -163,7 +163,7 @@ class MyAppState extends State<MyApp> {
                     _toMeasure = measure.toString();
                   });
                 },
-                value: _toMeasure,
+                value: /* "kilometres" */ _toMeasure,
               ),
               Spacer(flex: 2),
               ElevatedButton(
